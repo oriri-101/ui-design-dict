@@ -35,6 +35,8 @@ a{color:var(--accent);text-decoration:none}
 .hero p{font-size:15px;color:var(--sub);max-width:600px}
 .hero .tag-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
 .hero .tag{font-size:11px;padding:4px 10px;border-radius:4px;background:var(--tag-bg);color:var(--sub);font-weight:500}
+.new-badge{display:inline-block;vertical-align:middle;font-size:11px;font-weight:700;letter-spacing:1px;color:#fff;background:var(--accent);padding:3px 8px;border-radius:4px;margin-left:8px;animation:newPulse 2.4s ease-in-out infinite}
+@keyframes newPulse{0%,100%{box-shadow:0 0 0 0 rgba(196,92,62,.5)}50%{box-shadow:0 0 0 6px rgba(196,92,62,0)}}
 
 /* 章节 */
 .section{margin-bottom:64px}
@@ -228,8 +230,8 @@ a{color:var(--accent);text-decoration:none}
 
 <main class="main" id="mainContent">
   <div class="hero">
-    <h2>ORI的UI设计专业词典</h2>
-    <p>AI 精准校准专用 — 涵盖设计风格、布局、组件、视觉、交互、Prompt 指令六大领域，每个术语配可交互形态案例。</p>
+    <h2>ORI的UI设计专业词典 <span class="new-badge">NEW · v2</span></h2>
+    <p>AI 精准校准专用 — 涵盖设计风格、布局、组件、视觉、交互、Prompt 指令六大领域，每个术语配可交互形态案例。<br><span style="font-size:12px;color:var(--accent)">📌 这是常态更新的新版（ui-design-dict），旧版 ui-design-glossary 已停止维护。</span></p>
     <div class="tag-row">
       <span class="tag">10 大章节</span>
       <span class="tag">56 术语 + 12 配色 + 项目经验 + 灵感优化 + 设计资源</span>
