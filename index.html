@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ORI的UI设计专业词典</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8f7f4;--card:#fff;--text:#1a1a1a;--sub:#666;--border:#e8e5e0;--accent:#c45c3e;--accent2:#2d6a4f;--tag-bg:#f0ede8;--hover:#faf8f5;--shadow:0 1px 3px rgba(0,0,0,.06);--code-bg:#f5f3ef;--nav-bg:rgba(248,247,244,.92)}
+[data-theme="dark"]{--bg:#141413;--card:#1e1e1c;--text:#e8e5e0;--sub:#999;--border:#2e2e2a;--accent:#e07a5f;--accent2:#52b788;--tag-bg:#2a2a26;--hover:#252522;--shadow:0 1px 3px rgba(0,0,0,.3);--code-bg:#252522;--nav-bg:rgba(20,20,19,.92)}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;transition:background .3s,color .3s}
+a{color:var(--accent);text-decoration:none}
+
+/* 顶部导航 */
+.top-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 24px;justify-content:space-between}
+.top-bar h1{font-size:15px;font-weight:600;letter-spacing:.5px}
+.top-bar h1 span{color:var(--accent);margin-right:6px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+.theme-btn:hover{border-color:var(--accent)}
+
+/* 侧边导航 */
+.sidebar{position:fixed;top:56px;left:0;bottom:0;width:240px;background:var(--card);border-right:1px solid var(--border);overflow-y:auto;padding:16px 0;z-index:50}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.nav-group{margin-bottom:8px}
+.nav-group-title{padding:8px 20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--sub)}
+.nav-item{display:block;padding:7px 20px 7px 28px;font-size:13px;color:var(--sub);cursor:pointer;transition:all .15s;border-left:2px solid transparent}
+.nav-item:hover{color:var(--text);background:var(--hover)}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--hover);font-weight:500}
+
+/* 主内容区 */
+.main{margin-left:240px;padding:80px 48px 80px;max-width:960px}
+.hero{margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid var(--border)}
+.hero h2{font-size:32px;font-weight:700;line-height:1.3;margin-bottom:12px}
+.hero p{font-size:15px;color:var(--sub);max-width:600px}
+.hero .tag-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.hero .tag{font-size:11px;padding:4px 10px;border-radius:4px;background:var(--tag-bg);color:var(--sub);font-weight:500}
+
+/* 章节 */
+.section{margin-bottom:64px}
+.section-head{margin-bottom:32px}
+.section-head h3{font-size:22px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.section-head h3 .num{font-size:13px;color:var(--accent);font-weight:600;min-width:24px}
+.section-head p{font-size:13px;color:var(--sub)}
+
+/* 术语卡片 */
+.term-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.term-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:all .2s}
+.term-card:hover{box-shadow:var(--shadow);border-color:var(--accent)}
+.term-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.term-header h4{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.term-header h4 .en{font-size:12px;color:var(--sub);font-weight:400}
+.term-header .arrow{font-size:12px;color:var(--sub);transition:transform .2s}
+.term-card.open .arrow{transform:rotate(90deg)}
+.term-body{display:none;padding:0 20px 20px;animation:fadeIn .25s}
+.term-card.open .term-body{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.term-desc{font-size:13px;color:var(--sub);margin-bottom:16px;line-height:1.8}
+
+/* 案例展示区 */
+.demo-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;position:relative;min-height:80px;overflow:hidden}
+.demo-label{position:absolute;top:8px;right:10px;font-size:10px;color:var(--sub);letter-spacing:.5px;font-weight:500}
+
+/* 通用 demo 样式 */
+.demo-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.demo-col{display:flex;flex-direction:column;gap:8px;align-items:center}
+.demo-block{border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:500}
+.demo-text{font-size:11px;color:var(--sub);text-align:center;margin-top:4px}
+
+/* 按钮 demo */
+.demo-btn{padding:8px 20px;border-radius:6px;font-size:13px;font-weight:500;border:none;cursor:pointer;transition:all .15s}
+.demo-btn.primary{background:var(--accent);color:#fff}
+.demo-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
+.demo-btn.text{background:transparent;color:var(--accent);text-decoration:underline}
+.demo-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* 输入框 demo */
+.demo-input{padding:8px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;outline:none;transition:border .15s;width:180px}
+.demo-input:focus{border-color:var(--accent)}
+
+/* 开关 demo */
+.demo-switch{width:40px;height:22px;border-radius:11px;background:var(--border);position:relative;cursor:pointer;transition:background .2s}
+.demo-switch.on{background:var(--accent2)}
+.demo-switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.demo-switch.on::after{transform:translateX(18px)}
+
+/* 卡片 demo */
+.demo-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;width:200px}
+.demo-card .img{height:80px;background:var(--tag-bg);border-radius:4px;margin-bottom:10px}
+.demo-card .title{font-size:13px;font-weight:600;margin-bottom:4px}
+.demo-card .sub{font-size:11px;color:var(--sub)}
+
+/* Badge & Tag demo */
+.demo-badge{display:inline-flex;align-items:center;position:relative;padding:4px 8px}
+.demo-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);position:absolute;top:-2px;right:-2px}
+.demo-tag{padding:3px 10px;border-radius:4px;font-size:11px;font-weight:500}
+
+/* Skeleton demo */
+.skel{background:linear-gradient(90deg,var(--tag-bg) 25%,var(--border) 50%,var(--tag-bg) 75%);background-size:200% 100%;animation:skel 1.5s infinite;border-radius:4px}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Toast demo */
+.demo-toast{padding:10px 16px;border-radius:6px;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+
+/* Progress demo */
+.demo-progress{height:6px;background:var(--tag-bg);border-radius:3px;overflow:hidden;width:200px}
+.demo-progress .bar{height:100%;border-radius:3px;transition:width .6s}
+
+/* 色板 demo */
+.color-swatch{width:48px;height:48px;border-radius:6px;border:1px solid var(--border)}
+
+/* 圆角 demo */
+.radius-demo{width:56px;height:56px;background:var(--accent);opacity:.8}
+
+/* 阴影 demo */
+.shadow-demo{width:80px;height:56px;background:var(--card);border-radius:8px}
+
+/* 字重 demo */
+.weight-demo{font-size:16px;color:var(--text)}
+
+/* 状态 demo */
+.state-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* 动效 demo */
+.anim-box{width:40px;height:40px;background:var(--accent);border-radius:6px;cursor:pointer}
+.anim-box:hover{transform:scale(1.15)}
+.anim-ease{transition:transform .4s cubic-bezier(.4,0,.2,1)}
+.anim-spring{transition:transform .5s cubic-bezier(.175,.885,.32,1.275)}
+.anim-box.rotate:hover{transform:rotate(90deg)}
+
+/* 布局 demo */
+.layout-box{display:flex;gap:4px}
+.layout-col{background:var(--accent);opacity:.6;border-radius:3px;height:48px}
+.layout-sidebar-demo{display:flex;gap:4px;width:240px;height:80px}
+.layout-sidebar-demo .side{width:60px;background:var(--accent2);opacity:.5;border-radius:3px}
+.layout-sidebar-demo .content{flex:1;background:var(--tag-bg);border-radius:3px}
+
+/* Glassmorphism demo */
+.glass-demo{backdrop-filter:blur(10px);background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:16px;color:#fff;font-size:12px;position:relative}
+.glass-bg{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:10px;padding:24px}
+
+/* Neumorphism demo */
+.neu-demo{border-radius:12px;padding:20px;text-align:center;font-size:12px}
+[data-theme="dark"] .neu-demo{background:#1e1e1c;box-shadow:5px 5px 10px #111,inset -5px -5px 10px #2a2a28}
+:root .neu-demo{background:#e8e5e0;box-shadow:5px 5px 10px #d1cec9,inset -5px -5px 10px #fff}
+
+/* 代码块 */
+.code-block{background:var(--code-bg);border-radius:6px;padding:12px 16px;font-family:"SF Mono",Menlo,monospace;font-size:12px;color:var(--sub);overflow-x:auto;margin-top:12px}
+
+/* 搜索 */
+.search-wrap{padding:0 20px;margin-bottom:12px}
+.search-input{width:100%;padding:8px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;outline:none}
+.search-input:focus{border-color:var(--accent)}
+
+/* 配色方案卡片 */
+.palette-row{display:flex;gap:0;border-radius:8px;overflow:hidden;margin-bottom:12px}
+.palette-swatch{flex:1;height:56px;display:flex;align-items:flex-end;justify-content:center;padding:4px;font-size:9px;font-weight:600;letter-spacing:.3px;transition:flex .3s}
+.palette-swatch:hover{flex:1.6}
+.palette-swatch.light-text{color:rgba(255,255,255,.85)}
+.palette-swatch.dark-text{color:rgba(0,0,0,.6)}
+.palette-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.palette-meta-item{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:4px}
+.palette-meta-item strong{color:var(--text);font-weight:600}
+.palette-use{background:var(--tag-bg);border-radius:6px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--sub);line-height:1.8}
+.palette-use b{color:var(--text);font-weight:600}
+.palette-prompt{background:var(--code-bg);border-radius:6px;padding:12px 16px;font-family:"SF Mono",Menlo,monospace;font-size:11px;color:var(--sub);line-height:1.8;white-space:pre-wrap;border-left:3px solid var(--accent)}
+.palette-prompt .hl{color:var(--accent);font-weight:600}
+
+/* 密码锁屏 */
+.lock-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .4s}
+.lock-screen.hidden{opacity:0;pointer-events:none}
+.lock-icon{width:64px;height:64px;margin-bottom:24px;border-radius:50%;background:var(--tag-bg);display:flex;align-items:center;justify-content:center}
+.lock-icon svg{width:28px;height:28px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lock-title{font-size:20px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.lock-sub{font-size:13px;color:var(--sub);margin-bottom:24px}
+.lock-form{display:flex;gap:8px;align-items:center}
+.lock-input{padding:10px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:15px;width:160px;outline:none;text-align:center;letter-spacing:4px;transition:border .2s}
+.lock-input:focus{border-color:var(--accent)}
+.lock-input.shake{animation:shake .4s}
+.lock-btn{padding:10px 20px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+.lock-btn:hover{opacity:.9}
+.lock-error{font-size:12px;color:#c62828;margin-top:10px;min-height:18px}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+/* 资源链接行（轻量） */
+.resource-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--accent);text-decoration:none;transition:opacity .15s}
+.resource-link:hover{opacity:.75}
+.resource-link .r-url{font-size:12px;color:var(--sub);font-weight:400}
+.resource-link .r-arrow{font-size:12px;color:var(--sub)}
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{margin-left:0;padding:72px 20px 60px}
+  .hero h2{font-size:24px}
+  .term-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- 密码锁屏 -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-icon">
+    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  </div>
+  <div class="lock-title">ORI的UI设计专业词典</div>
+  <div class="lock-sub">请输入访问密码</div>
+  <div class="lock-form">
+    <input class="lock-input" id="lockInput" type="password" maxlength="10" placeholder="····" autofocus />
+    <button class="lock-btn" onclick="tryUnlock()">进入</button>
+  </div>
+  <div class="lock-error" id="lockError"></div>
+</div>
+
+<div id="appShell" style="display:none">
+<div class="top-bar">
+  <h1><span>/</span>ORI's UI Design Dictionary</h1>
+  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">&#9790;</button>
+</div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="search-wrap">
+    <input class="search-input" placeholder="搜索术语..." oninput="filterTerms(this.value)" />
+  </div>
+  <div id="navList"></div>
+</aside>
+
+<main class="main" id="mainContent">
+  <div class="hero">
+    <h2>ORI的UI设计专业词典</h2>
+    <p>AI 精准校准专用 — 涵盖设计风格、布局、组件、视觉、交互、Prompt 指令六大领域，每个术语配可交互形态案例。</p>
+    <div class="tag-row">
+      <span class="tag">9 大章节</span>
+      <span class="tag">56 术语 + 12 配色 + 项目经验 + 设计资源</span>
+      <span class="tag">可交互案例</span>
+      <span class="tag">深色模式</span>
+    </div>
+  </div>
+  <div id="content"></div>
+</main>
+</div><!-- /appShell -->
+
+
+<script>
+// === 密码锁 ===
+const PASS_HASH='1109';
+function tryUnlock(){
+  const v=document.getElementById('lockInput').value;
+  if(v===PASS_HASH){
+    sessionStorage.setItem('unlocked','1');
+    showApp();
+  }else{
+    const inp=document.getElementById('lockInput');
+    inp.classList.remove('shake');void inp.offsetWidth;inp.classList.add('shake');
+    document.getElementById('lockError').textContent='密码错误，请重试';
+    inp.value='';inp.focus();
+  }
+}
+function showApp(){
+  const lock=document.getElementById('lockScreen');
+  lock.classList.add('hidden');
+  setTimeout(()=>lock.style.display='none',400);
+  document.getElementById('appShell').style.display='';
+}
+document.getElementById('lockInput').addEventListener('keydown',function(e){if(e.key==='Enter')tryUnlock()});
+if(sessionStorage.getItem('unlocked')==='1')showApp();
+
+// === 主题切换 ===
+function toggleTheme(){
+  const d=document.documentElement;
+  const t=d.getAttribute("data-theme")==="dark"?"light":"dark";
+  d.setAttribute("data-theme",t);
+  document.getElementById("themeBtn").innerHTML=t==="dark"?"&#9788;":"&#9790;";
+  localStorage.setItem("theme",t);
+}
+(function(){const t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.getElementById("themeBtn").innerHTML="&#9788;"})();
+
+// === 数据 ===
+const DATA=[
+// ========== 设计网站 ==========
+{
+  id:"sites",title:"设计网站",num:"00",
+  desc:"精选设计资源与灵感站点，持续收录中。",
+  terms:[
+    {name:"单页设计",en:"One Page Love",
+     desc:"收录全球最佳单页网站设计的灵感库，涵盖落地页、产品页、作品集等类型，是单页设计参考的首选。",
+     demo:'<a class="resource-link" href="https://onepagelove.com/page/5" target="_blank" rel="noopener">单页设计 One Page Love<span class="r-url">onepagelove.com/page/5</span><span class="r-arrow">&#8594;</span></a>'},
+    {name:"wrapmarket",en:"Website Design",
+     desc:"精选网站设计模板与灵感市场，涵盖各类网站风格参考，适合快速找到设计方向。",
+     demo:'<a class="resource-link" href="https://wrapmarket.com/" target="_blank" rel="noopener">wrapmarket 网站设计<span class="r-url">wrapmarket.com</span><span class="r-arrow">&#8594;</span></a>'}
+  ]
+},
+// ========== 第1章 设计风格 ==========
+{
+  id:"style",title:"设计风格体系",num:"01",
+  desc:"定义整体基调与视觉方向。从大厂设计系统到主流视觉风格，决定产品的第一印象。",
+  terms:[
+    {name:"iOS HIG",en:"Human Interface Guidelines",desc:"Apple 官方设计规范。强调清晰性、遵从性、深度感。大量使用 SF Pro 字体、毛玻璃效果、圆角卡片。",
+     demo:'<div class="glass-bg" style="display:flex;gap:12px;align-items:center"><div class="glass-demo">毛玻璃效果</div><div style="font-size:11px;color:rgba(255,255,255,.7)">iOS 标志性视觉</div></div>'},
+    {name:"Material Design 3",en:"MD3 / Material You",desc:"Google 的设计系统。强调动态色彩（Dynamic Color）、大圆角、高对比度容器。",
+     demo:'<div class="demo-row"><div class="demo-block" style="width:80px;height:48px;border-radius:16px;background:#6750a4">Primary</div><div class="demo-block" style="width:80px;height:48px;border-radius:16px;background:#625b71">Secondary</div><div class="demo-block" style="width:80px;height:48px;border-radius:16px;background:#7d5260">Tertiary</div></div>'},
+    {name:"极简主义",en:"Minimalism",desc:"最少元素、最大留白。去除一切装饰性元素，只保留核心信息与交互。",
+     demo:'<div style="padding:20px;text-align:center"><div style="font-size:20px;font-weight:700;margin-bottom:8px">Hello.</div><div style="font-size:12px;color:var(--sub)">Less is more.</div></div>'},
+    {name:"扁平化 2.0",en:"Flat Design 2.0",desc:"在纯扁平基础上加入微妙阴影和层次感，保持简洁同时提升可用性。",
+     demo:'<div class="demo-row"><div style="width:64px;height:64px;background:var(--accent);border-radius:12px;box-shadow:0 2px 8px rgba(196,92,62,.25)"></div><div style="width:64px;height:64px;background:var(--accent2);border-radius:12px;box-shadow:0 2px 8px rgba(45,106,79,.25)"></div><div style="width:64px;height:64px;background:#4a7fb5;border-radius:12px;box-shadow:0 2px 8px rgba(74,127,181,.25)"></div></div>'},
+    {name:"玻璃拟态",en:"Glassmorphism",desc:"半透明背景 + 高斯模糊 + 细微边框，营造如玻璃般的深度感与层次感。",
+     demo:'<div class="glass-bg"><div class="glass-demo">backdrop-filter: blur(10px)<br>background: rgba(255,255,255,0.15)</div></div>'},
+    {name:"新拟态",en:"Neumorphism",desc:"通过凸起/凹陷的柔和阴影模拟实物触感。适合开关、旋钮等小组件。",
+     demo:'<div class="neu-demo">Neumorphism<br><span style="font-size:10px;color:var(--sub)">柔和凸起效果</span></div>'},
+    {name:"酸性设计",en:"Acid Design",desc:"高饱和度、变形字体、金属质感、液态形态。常见于音乐、潮牌、先锋设计。",
+     demo:'<div style="background:linear-gradient(135deg,#ff006e,#8338ec,#3a86ff);padding:20px;border-radius:8px;text-align:center"><span style="color:#fff;font-size:18px;font-weight:900;font-style:italic;letter-spacing:2px">ACID</span><div style="color:rgba(255,255,255,.6);font-size:10px;margin-top:4px">高饱和 / 变形 / 液态</div></div>'},
+    {name:"赛博朋克",en:"Cyberpunk",desc:"霓虹光效、深色背景、故障纹理、科幻感强烈。常用于游戏和科技产品。",
+     demo:'<div style="background:#0a0a1a;padding:20px;border-radius:8px;text-align:center;border:1px solid #00fff5"><span style="color:#00fff5;font-size:16px;font-weight:700;text-shadow:0 0 10px #00fff5">CYBER</span><span style="color:#ff2a6d;font-size:16px;font-weight:700;text-shadow:0 0 10px #ff2a6d;margin-left:8px">PUNK</span></div>'}
+  ]
+},
+// ========== 第2章 布局与结构 ==========
+{
+  id:"layout",title:"布局与结构",num:"02",
+  desc:"定义页面骨架与空间分配，决定信息的组织方式。",
+  terms:[
+    {name:"响应式布局",en:"Responsive Layout",desc:"根据屏幕宽度自动调整布局。通过媒体查询（Media Query）在不同断点切换排列方式。",
+     demo:'<div style="display:flex;gap:8px;align-items:end"><div style="width:30px;height:60px;background:var(--accent);opacity:.7;border-radius:3px;font-size:9px;color:#fff;display:flex;align-items:end;justify-content:center;padding:2px">M</div><div style="width:50px;height:60px;background:var(--accent);opacity:.8;border-radius:3px;font-size:9px;color:#fff;display:flex;align-items:end;justify-content:center;padding:2px">Tablet</div><div style="width:80px;height:60px;background:var(--accent);border-radius:3px;font-size:9px;color:#fff;display:flex;align-items:end;justify-content:center;padding:2px">Desktop</div></div>'},
+    {name:"栅格布局",en:"Grid Layout",desc:"将页面划分为等宽列（常见 12/24 列），内容放置在列中。水槽（Gutter）为列间距。",
+     demo:'<div class="layout-box" style="width:100%">'+Array.from({length:12},(_,i)=>'<div class="layout-col" style="flex:1;opacity:'+(i%2?.5:.7)+'"></div>').join("")+'</div><div style="font-size:10px;color:var(--sub);margin-top:6px">12 列栅格 · 8px 基础单位</div>'},
+    {name:"卡片式布局",en:"Card Layout",desc:"以卡片为基本单元组织内容，每张卡片是独立的信息容器。适合内容聚合类产品。",
+     demo:'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:240px"><div style="background:var(--tag-bg);border-radius:6px;height:56px"></div><div style="background:var(--tag-bg);border-radius:6px;height:72px"></div><div style="background:var(--tag-bg);border-radius:6px;height:64px"></div><div style="background:var(--tag-bg);border-radius:6px;height:52px"></div></div>'},
+    {name:"侧边栏布局",en:"Sidebar Layout",desc:"左侧固定导航 + 右侧内容区。后台管理系统最常见的布局模式。",
+     demo:'<div class="layout-sidebar-demo"><div class="side"></div><div class="content"></div></div>'},
+    {name:"瀑布流布局",en:"Masonry / Waterfall",desc:"不等高卡片按列排列，像瀑布般错落有致。Pinterest、小红书典型布局。",
+     demo:'<div style="display:flex;gap:6px;max-width:200px"><div style="display:flex;flex-direction:column;gap:6px;flex:1"><div style="background:var(--tag-bg);border-radius:4px;height:60px"></div><div style="background:var(--tag-bg);border-radius:4px;height:40px"></div></div><div style="display:flex;flex-direction:column;gap:6px;flex:1"><div style="background:var(--tag-bg);border-radius:4px;height:40px"></div><div style="background:var(--tag-bg);border-radius:4px;height:64px"></div></div></div>'},
+    {name:"8px 栅格",en:"8px Grid",desc:"所有间距、尺寸以 8px 为基准倍数（8/16/24/32/48...）。确保视觉对齐与一致性。",
+     demo:'<div class="demo-row">'+[8,16,24,32,48].map(v=>'<div class="demo-col"><div style="width:'+v+'px;height:'+v+'px;background:var(--accent);opacity:.6;border-radius:3px"></div><div class="demo-text">'+v+'px</div></div>').join("")+'</div>'},
+    {name:"吸顶布局",en:"Sticky Header",desc:"导航栏固定在视口顶部，滚动时始终可见。提升导航效率。",
+     demo:'<div style="border:1px solid var(--border);border-radius:6px;height:80px;overflow:hidden;width:180px"><div style="background:var(--accent);height:24px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;position:sticky;top:0">Sticky NavBar</div><div style="padding:6px;font-size:9px;color:var(--sub);line-height:1.8">内容区域<br>滚动时导航固定<br>始终可见<br>提升效率</div></div>'}
+  ]
+},
+// ========== 第3章 标准UI组件 ==========
+{
+  id:"components",title:"标准 UI 组件",num:"03",
+  desc:"行业通用的组件命名与形态，AI 最容易识别和生成的标准化组件。",
+  terms:[
+    {name:"主按钮",en:"Primary Button",desc:"页面最重要的行动召唤（CTA）。使用主色填充，视觉权重最高。",
+     demo:'<div class="demo-row"><button class="demo-btn primary">主要操作</button><button class="demo-btn secondary">次要操作</button><button class="demo-btn text">文字按钮</button><button class="demo-btn primary" disabled>禁用</button></div>'},
+    {name:"输入框",en:"Input",desc:"用户输入文本信息的基础组件。包含默认、聚焦、错误、禁用等状态。",
+     demo:'<div class="demo-row"><input class="demo-input" placeholder="默认状态" /><input class="demo-input" value="聚焦状态" style="border-color:var(--accent)" /><input class="demo-input" value="错误状态" style="border-color:#e74c3c" /></div>'},
+    {name:"开关",en:"Switch / Toggle",desc:"在两种状态间切换（开/关、是/否）。提供即时反馈。",
+     demo:'<div class="demo-row"><div class="demo-switch" onclick="this.classList.toggle(\'on\')"></div><div class="demo-switch on" onclick="this.classList.toggle(\'on\')"></div></div>'},
+    {name:"卡片",en:"Card",desc:"独立信息容器，包含图片、标题、描述等内容。是内容聚合的基本单元。",
+     demo:'<div class="demo-row"><div class="demo-card"><div class="img"></div><div class="title">卡片标题</div><div class="sub">描述文字，简要说明内容</div></div></div>'},
+    {name:"标签",en:"Tag",desc:"用于标记和分类的小型组件。常用颜色区分不同类别。",
+     demo:'<div class="demo-row"><span class="demo-tag" style="background:var(--accent);color:#fff">热门</span><span class="demo-tag" style="background:var(--accent2);color:#fff">新品</span><span class="demo-tag" style="background:var(--tag-bg);color:var(--text)">默认</span><span class="demo-tag" style="background:#fef3c7;color:#92400e">预警</span></div>'},
+    {name:"徽标",en:"Badge",desc:"出现在图标或内容右上角的小红点或数字，提示未读/新消息。",
+     demo:'<div class="demo-row"><div class="demo-badge" style="background:var(--tag-bg);border-radius:6px;padding:8px 14px;font-size:13px">消息 <div class="dot"></div></div><div style="background:var(--tag-bg);border-radius:6px;padding:8px 14px;font-size:13px;position:relative">通知 <span style="position:absolute;top:-4px;right:-4px;background:var(--accent);color:#fff;font-size:9px;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center">5</span></div></div>'},
+    {name:"骨架屏",en:"Skeleton",desc:"内容加载前的占位动画，用灰色色块模拟最终内容的布局。",
+     demo:'<div style="width:200px"><div class="skel" style="width:100%;height:80px;margin-bottom:8px"></div><div class="skel" style="width:70%;height:12px;margin-bottom:6px"></div><div class="skel" style="width:90%;height:12px;margin-bottom:6px"></div><div class="skel" style="width:50%;height:12px"></div></div>'},
+    {name:"进度条",en:"Progress Bar",desc:"显示任务完成进度的条形组件。",
+     demo:'<div style="display:flex;flex-direction:column;gap:8px"><div class="demo-progress"><div class="bar" style="width:30%;background:var(--accent)"></div></div><div class="demo-progress"><div class="bar" style="width:65%;background:var(--accent2)"></div></div><div class="demo-progress"><div class="bar" style="width:100%;background:#4a7fb5"></div></div></div>'},
+    {name:"提示",en:"Toast",desc:"轻量级消息反馈，自动消失。用于操作成功、失败、警告等场景。",
+     demo:'<div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start"><div class="demo-toast" style="background:#ecfdf5;color:#065f46">&#10003; 保存成功</div><div class="demo-toast" style="background:#fef2f2;color:#991b1b">&#10007; 操作失败</div><div class="demo-toast" style="background:#fefce8;color:#854d0e">&#9888; 请注意</div></div>'},
+    {name:"模态框",en:"Modal / Dialog",desc:"覆盖在页面上的弹窗容器，需用户主动关闭。用于确认操作、表单填写等。",
+     demo:'<div style="background:rgba(0,0,0,.3);border-radius:8px;padding:24px;display:flex;align-items:center;justify-content:center"><div style="background:var(--card);border-radius:10px;padding:20px;width:200px;box-shadow:0 8px 32px rgba(0,0,0,.15)"><div style="font-size:14px;font-weight:600;margin-bottom:8px">确认删除？</div><div style="font-size:11px;color:var(--sub);margin-bottom:16px">此操作不可撤销</div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="demo-btn secondary" style="padding:6px 12px;font-size:11px">取消</button><button class="demo-btn primary" style="padding:6px 12px;font-size:11px">确认</button></div></div></div>'}
+  ]
+},
+// ========== 第4章 视觉样式 ==========
+{
+  id:"visual",title:"视觉样式术语",num:"04",
+  desc:"色彩、字体、质感、空间 —— 控制 UI 视觉品质的基础参数。",
+  terms:[
+    {name:"主色 / 辅助色 / 强调色",en:"Primary / Secondary / Accent",desc:"主色承载品牌识别，辅助色补充层次，强调色突出关键操作。三者构成完整色彩体系。",
+     demo:'<div class="demo-row"><div class="demo-col"><div class="color-swatch" style="background:var(--accent)"></div><div class="demo-text">Primary</div></div><div class="demo-col"><div class="color-swatch" style="background:var(--accent2)"></div><div class="demo-text">Secondary</div></div><div class="demo-col"><div class="color-swatch" style="background:#4a7fb5"></div><div class="demo-text">Accent</div></div><div class="demo-col"><div class="color-swatch" style="background:var(--sub)"></div><div class="demo-text">Neutral</div></div></div>'},
+    {name:"渐变色",en:"Gradient",desc:"两种或多种颜色的平滑过渡。线性渐变沿直线方向，径向渐变从中心向外扩散。",
+     demo:'<div class="demo-row"><div style="width:80px;height:48px;border-radius:8px;background:linear-gradient(135deg,#667eea,#764ba2)"></div><div style="width:80px;height:48px;border-radius:8px;background:linear-gradient(135deg,#f093fb,#f5576c)"></div><div style="width:80px;height:48px;border-radius:8px;background:radial-gradient(circle,#ffecd2,#fcb69f)"></div></div><div style="font-size:10px;color:var(--sub);margin-top:6px">线性渐变 &nbsp;·&nbsp; 线性渐变 &nbsp;·&nbsp; 径向渐变</div>'},
+    {name:"字重",en:"Font Weight",desc:"字体粗细程度。常见值：300 Light / 400 Regular / 500 Medium / 600 Semibold / 700 Bold。",
+     demo:'<div style="display:flex;flex-direction:column;gap:4px">'+[["300","Light"],["400","Regular"],["500","Medium"],["600","Semibold"],["700","Bold"]].map(w=>'<div class="weight-demo" style="font-weight:'+w[0]+'">'+w[0]+' '+w[1]+' 字重示例</div>').join("")+'</div>'},
+    {name:"圆角",en:"Border Radius",desc:"控制元素四角的弧度。小圆角（4-8px）偏商务，大圆角（16-24px）偏亲和。",
+     demo:'<div class="demo-row">'+[["0px","直角"],["4px","小圆角"],["8px","中圆角"],["16px","大圆角"],["50%","全圆"]].map(r=>'<div class="demo-col"><div class="radius-demo" style="border-radius:'+r[0]+'"></div><div class="demo-text">'+r[1]+'<br>'+r[0]+'</div></div>').join("")+'</div>'},
+    {name:"阴影",en:"Shadow / Elevation",desc:"模拟光照产生的投影效果。阴影越大，元素层级越高。分为外阴影和内阴影。",
+     demo:'<div class="demo-row"><div class="demo-col"><div class="shadow-demo" style="box-shadow:0 1px 2px rgba(0,0,0,.06)"></div><div class="demo-text">Level 1</div></div><div class="demo-col"><div class="shadow-demo" style="box-shadow:0 4px 12px rgba(0,0,0,.1)"></div><div class="demo-text">Level 2</div></div><div class="demo-col"><div class="shadow-demo" style="box-shadow:0 8px 24px rgba(0,0,0,.15)"></div><div class="demo-text">Level 3</div></div><div class="demo-col"><div class="shadow-demo" style="box-shadow:inset 0 2px 8px rgba(0,0,0,.12)"></div><div class="demo-text">Inner</div></div></div>'},
+    {name:"透明度",en:"Opacity",desc:"元素的不透明度。0 完全透明，1 完全不透明。常用于遮罩、弱化元素。",
+     demo:'<div class="demo-row">'+[1,.75,.5,.25,.1].map(o=>'<div class="demo-col"><div style="width:48px;height:48px;background:var(--accent);border-radius:6px;opacity:'+o+'"></div><div class="demo-text">'+Math.round(o*100)+'%</div></div>').join("")+'</div>'},
+    {name:"行高",en:"Line Height",desc:"文字行与行之间的垂直间距。正文推荐 1.5-1.8 倍行高，标题可缩至 1.2-1.3。",
+     demo:'<div style="display:flex;gap:16px">'+[["1.0","紧凑"],["1.5","适中"],["2.0","宽松"]].map(l=>'<div style="width:120px;font-size:12px;line-height:'+l[0]+';color:var(--sub);padding:8px;background:var(--tag-bg);border-radius:4px"><strong style="color:var(--text)">'+l[1]+' ('+l[0]+')</strong><br>行高决定文本的阅读舒适度，是排版中最基础的参数之一。</div>').join("")+'</div>'}
+  ]
+},
+// ========== 第5章 交互与动效 ==========
+{
+  id:"interaction",title:"交互与动效",num:"05",
+  desc:"状态变化与运动规律 —— 让静态界面活起来。",
+  terms:[
+    {name:"组件状态",en:"Component States",desc:"组件在不同交互阶段的视觉表现：默认、悬停、点击、聚焦、禁用、选中、加载、错误。",
+     demo:'<div class="demo-row" style="flex-wrap:wrap;gap:12px">'+[["Default","var(--tag-bg)","var(--text)"],["Hover","var(--accent)","#fff"],["Active","#a3412a","#fff"],["Focus","var(--tag-bg)","var(--accent)"],["Disabled","var(--tag-bg)","var(--border)"],["Error","#fef2f2","#dc2626"]].map(s=>'<div style="padding:6px 14px;border-radius:6px;background:'+s[1]+';color:'+s[2]+';font-size:11px;font-weight:500;'+(s[0]==="Focus"?"outline:2px solid var(--accent);outline-offset:2px;":"")+(s[0]==="Disabled"?"opacity:.5;":"")+'">'+s[0]+'</div>').join("")+'</div>'},
+    {name:"缓动函数",en:"Easing Functions",desc:"控制动画的速度曲线。缓入缓出最自然，弹性动画更活泼。悬停下方色块可体验。",
+     demo:'<div style="display:flex;gap:16px">'+[["ease-in-out","缓入缓出","anim-ease"],["spring","弹性","anim-spring"]].map(a=>'<div class="demo-col"><div class="anim-box '+a[2]+'"></div><div class="demo-text">'+a[1]+'</div></div>').join("")+'<div class="demo-col"><div class="anim-box anim-ease rotate"></div><div class="demo-text">旋转</div></div></div><div style="font-size:10px;color:var(--sub);margin-top:8px">悬停色块查看动效</div>'},
+    {name:"渐入渐出",en:"Fade In / Fade Out",desc:"元素通过透明度变化出现或消失。最基础、最常用的过渡效果。",
+     demo:'<div class="demo-row"><div id="fadeDemo" style="width:60px;height:40px;background:var(--accent);border-radius:6px;transition:opacity .5s"></div><button class="demo-btn secondary" style="font-size:11px;padding:6px 12px" onclick="var d=document.getElementById(\'fadeDemo\');d.style.opacity=d.style.opacity===\'0\'?\'1\':\'0\'">切换可见</button></div>'},
+    {name:"微交互",en:"Micro Interaction",desc:"细微的动态反馈：按钮点击缩放、图标弹跳、输入框聚焦发光。提升操作手感。",
+     demo:'<div class="demo-row"><button class="demo-btn primary" style="transition:transform .1s" onmousedown="this.style.transform=\'scale(.95)\'" onmouseup="this.style.transform=\'scale(1)\'" onmouseleave="this.style.transform=\'scale(1)\'">点我试试</button></div>'},
+    {name:"滚动动画",en:"Scroll Animation",desc:"元素随页面滚动逐步显现。常用于落地页（Landing Page）的视觉叙事。",
+     demo:'<div style="font-size:12px;color:var(--sub)">常见技法：<br>· 元素从下方淡入（translateY + opacity）<br>· 视差滚动（Parallax）<br>· 进度指示器联动<br>· IntersectionObserver API 触发</div>'},
+    {name:"页面转场",en:"Page Transition",desc:"页面切换时的过渡动画。常见模式：滑入滑出、渐变、缩放、共享元素过渡。",
+     demo:'<div style="display:flex;gap:8px">'+[["Slide","translateX"],["Fade","opacity"],["Scale","scale"],["Shared","共享元素"]].map(t=>'<div style="width:56px;height:40px;background:var(--tag-bg);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--sub)">'+t[0]+'</div>').join("")+'</div>'}
+  ]
+},
+// ========== 第6章 AI校准指令 ==========
+{
+  id:"prompt",title:"AI 校准指令",num:"06",
+  desc:"直接粘贴进 Prompt 的标准化指令，确保 AI 生成的 UI 符合专业标准。",
+  terms:[
+    {name:"像素级对齐",en:"Pixel Perfect Alignment",desc:"所有元素必须对齐到栅格。边距、间距必须是基础单位（如 8px）的整数倍。",
+     demo:'<div class="code-block">严格遵循 8px 基础栅格，所有间距为 8 的倍数。\n元素边界对齐到最近的栅格线。\n避免出现奇数像素的间距。</div>'},
+    {name:"信息层级清晰",en:"Clear Visual Hierarchy",desc:"通过字号、字重、颜色、间距建立明确的视觉层级：标题 > 副标题 > 正文 > 辅助文字。",
+     demo:'<div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:20px;font-weight:700">H1 页面标题</div><div style="font-size:16px;font-weight:600">H2 章节标题</div><div style="font-size:14px;font-weight:500;color:var(--sub)">H3 小节标题</div><div style="font-size:13px;color:var(--sub)">Body 正文内容</div><div style="font-size:11px;color:var(--border)">Caption 辅助说明</div></div>'},
+    {name:"留白与呼吸感",en:"Whitespace / Breathing Room",desc:"充足的留白让信息更易消化。段落间距 > 元素间距 > 组件内间距。",
+     demo:'<div class="code-block">区域间距: 48-64px\n段落间距: 24-32px\n组件内间距: 12-16px\n元素间距: 8px\n\n留白是设计中最被低估的工具。</div>'},
+    {name:"色彩体系统一",en:"Unified Color System",desc:"全局使用 CSS 变量定义色彩 Token。主色、辅助色、中性色、语义色各司其职。",
+     demo:'<div class="code-block">--color-primary: #C45C3E;\n--color-secondary: #2D6A4F;\n--color-accent: #4A7FB5;\n--color-neutral-100: #F8F7F4;\n--color-neutral-900: #1A1A1A;\n--color-success: #059669;\n--color-error: #DC2626;\n--color-warning: #D97706;</div>'},
+    {name:"突出 CTA",en:"Prominent Call-to-Action",desc:"核心操作按钮必须在视觉上最突出。通过颜色、大小、位置、留白来引导用户视线。",
+     demo:'<div style="text-align:center;padding:12px"><div style="font-size:13px;margin-bottom:12px;color:var(--sub)">次要信息在上方</div><button class="demo-btn primary" style="padding:12px 40px;font-size:15px;border-radius:8px">立即开始</button><div style="font-size:11px;margin-top:8px;color:var(--border)">辅助说明文字</div></div>'},
+    {name:"降低视觉噪音",en:"Reduce Visual Noise",desc:"去除不必要的线条、装饰、色彩。用留白和层级替代分割线，用灰度替代多色。",
+     demo:'<div style="display:flex;gap:16px"><div style="width:100px;border:2px solid var(--border);border-radius:6px;padding:8px"><div style="border-bottom:1px solid var(--border);margin-bottom:4px;padding-bottom:4px;font-size:10px;color:var(--accent)">噪音较多</div><div style="font-size:9px;color:var(--sub);border-bottom:1px dashed var(--border);padding:2px 0">Item 1</div><div style="font-size:9px;color:var(--sub);border-bottom:1px dashed var(--border);padding:2px 0">Item 2</div></div><div style="width:100px;border-radius:6px;padding:8px;background:var(--tag-bg)"><div style="margin-bottom:8px;font-size:10px;font-weight:600">更克制</div><div style="font-size:9px;color:var(--sub);padding:3px 0">Item 1</div><div style="font-size:9px;color:var(--sub);padding:3px 0">Item 2</div></div></div>'}
+  ]
+},
+// ========== 第7章 经典配色方案 ==========
+{
+  id:"palette",title:"经典配色方案",num:"07",
+  desc:"12 套经过验证的配色体系，每套附带适用场景与可直接喂给 AI / 设计师的需求描述。",
+  terms:[
+    {name:"商务深灰暖棕",en:"Executive Warm",
+     desc:"沉稳、克制、高端。适合企业级后台、金融产品、咨询报告。深灰打底配暖棕色强调，传递专业可靠感。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#1A1916">#1A1916</div><div class="palette-swatch light-text" style="background:#2A2924">#2A2924</div><div class="palette-swatch light-text" style="background:#5C5A54">#5C5A54</div><div class="palette-swatch dark-text" style="background:#E8E5E0">#E8E5E0</div><div class="palette-swatch light-text" style="background:#C4652A">#C4652A</div></div><div class="palette-use"><b>适用场景：</b>企业级 SaaS 后台、金融仪表盘、咨询/研报落地页、数据分析工具<br><b>配色诉求：</b>去科技感、去AI感，传递「值得信赖的专业机构」气质。暖色点缀打破冷调沉闷。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n配色体系使用深灰暖棕色调。主背景 #FAFAF8（浅色）/ #1A1916（深色），卡片白底，强调色 #C4652A（赤褐色）仅用于 CTA 按钮、关键数据标注和导航活跃态。中性文字 #5C5A54，辅助信息 #8A877F。严禁使用蓝紫渐变、霓虹色或高饱和色。整体视觉参考高端咨询公司年报质感。</div>'},
+
+    {name:"科技冷蓝",en:"Tech Blue",
+     desc:"理性、科技、可信赖。蓝色系是全球使用率最高的 UI 配色——从 Facebook 到支付宝，蓝色 = 安全 + 专业。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#0F172A">#0F172A</div><div class="palette-swatch light-text" style="background:#1E40AF">#1E40AF</div><div class="palette-swatch light-text" style="background:#3B82F6">#3B82F6</div><div class="palette-swatch dark-text" style="background:#BFDBFE">#BFDBFE</div><div class="palette-swatch dark-text" style="background:#F0F9FF">#F0F9FF</div></div><div class="palette-use"><b>适用场景：</b>To-B 企业产品、云服务控制台、支付/金融 App、项目管理工具<br><b>配色诉求：</b>建立「安全可信」的心智，蓝色降低用户警戒心。适度使用深蓝提升权威感。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n使用科技蓝配色体系。主色 #3B82F6，深色变体 #1E40AF 用于导航/页头，浅色 #BFDBFE 用于选中态背景和标签。页面背景 #F0F9FF（浅色模式）/ #0F172A（深色模式）。强调交互用 #3B82F6 → hover 加深至 #2563EB。错误用 #EF4444，成功用 #22C55E，警告用 #F59E0B。整体感受：像 Stripe 或 Linear 那样干净利落的科技产品。</div>'},
+
+    {name:"自然绿意",en:"Nature Green",
+     desc:"健康、生长、可持续。绿色传递生命力和环保理念，适合健康、农业、ESG 类产品。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#14532D">#14532D</div><div class="palette-swatch light-text" style="background:#166534">#166534</div><div class="palette-swatch light-text" style="background:#22C55E">#22C55E</div><div class="palette-swatch dark-text" style="background:#BBF7D0">#BBF7D0</div><div class="palette-swatch dark-text" style="background:#F0FDF4">#F0FDF4</div></div><div class="palette-use"><b>适用场景：</b>健康管理 App、有机食品电商、ESG 报告、环保公益网站、运动健身产品<br><b>配色诉求：</b>传递「自然、清新、值得信赖」的品牌感。绿色明度不宜过高，避免荧光感。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n配色以自然绿为核心。主色 #22C55E，CTA 和关键操作使用此色。深色 #166534 用于标题和导航，浅色 #F0FDF4 为页面背景。卡片纯白底、阴影极轻（0 1px 3px rgba(0,0,0,.04)）。辅助用暖灰 #6B7280 而非冷灰，保持有温度的自然感。图标风格：线性、2px 描边、圆角端点。</div>'},
+
+    {name:"暗夜紫金",en:"Royal Purple",
+     desc:"高贵、神秘、创意。紫色在色彩心理学中代表创造力和奢华，适合创意工具和高端品牌。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#1E1B2E">#1E1B2E</div><div class="palette-swatch light-text" style="background:#5B21B6">#5B21B6</div><div class="palette-swatch light-text" style="background:#8B5CF6">#8B5CF6</div><div class="palette-swatch dark-text" style="background:#DDD6FE">#DDD6FE</div><div class="palette-swatch dark-text" style="background:#EDE9FE">#EDE9FE</div></div><div class="palette-use"><b>适用场景：</b>设计工具（如 Figma）、AI/创意产品、奢侈品牌电商、音乐/播客平台<br><b>配色诉求：</b>强调创造力与差异化。紫色比蓝色更有个性，适合想「脱颖而出」的产品。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n使用紫金配色方案。深紫 #5B21B6 为主色，亮紫 #8B5CF6 为交互态（按钮、链接、选中态）。深色模式背景 #1E1B2E，浅色模式 #EDE9FE。金色 #F59E0B 作为高光强调色，仅用于 Premium 标签、成就徽章等极少量场景。文字保持高对比，正文不使用紫色以免疲劳。</div>'},
+
+    {name:"莫兰迪柔雾",en:"Morandi Muted",
+     desc:"含蓄、优雅、高级灰。莫兰迪色系特点是所有颜色都加了灰度，降低饱和度，营造柔和质感。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#4A4543">#4A4543</div><div class="palette-swatch dark-text" style="background:#9B8E8A">#9B8E8A</div><div class="palette-swatch dark-text" style="background:#C4B8B0">#C4B8B0</div><div class="palette-swatch dark-text" style="background:#D5C4B6">#D5C4B6</div><div class="palette-swatch dark-text" style="background:#E8DDD4">#E8DDD4</div></div><div class="palette-use"><b>适用场景：</b>生活方式 App、家居电商、美妆品牌、读书/笔记类产品、摄影作品集<br><b>配色诉求：</b>「高级感」的核心密码——降低饱和度。每种颜色都像蒙了一层薄雾，优雅不抢眼。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n采用莫兰迪色系（低饱和度灰调色彩）。所有色彩 HSL 饱和度控制在 10-25% 之间。背景 #F5F0EB，卡片 #FFFDF9，主要强调 #9B8E8A（灰褐），次要 #A8B0A0（灰绿）。绝对禁止任何高饱和颜色。字重偏轻（300-400），字号可略大（16px 正文），行高 1.8。整体感受：像翻开一本日本杂志。</div>'},
+
+    {name:"中国红传统",en:"Chinese Red",
+     desc:"喜庆、热烈、文化传承。中国红 + 鎏金是东方美学的经典组合，适合节日运营和国潮品牌。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#1A0A0A">#1A0A0A</div><div class="palette-swatch light-text" style="background:#8B1A1A">#8B1A1A</div><div class="palette-swatch light-text" style="background:#DC2626">#DC2626</div><div class="palette-swatch dark-text" style="background:#D4A853">#D4A853</div><div class="palette-swatch dark-text" style="background:#FEF3E2">#FEF3E2</div></div><div class="palette-use"><b>适用场景：</b>春节/国庆运营活动页、国潮品牌官网、传统文化展示、红色主题报告<br><b>配色诉求：</b>高饱和红色传递热烈氛围，但需用暗色和金色平衡，避免廉价喜庆感。金色不要亮黄，用暗金 #D4A853。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n中国红配色。主色 #DC2626（正红），搭配暗金 #D4A853 和深底 #1A0A0A。红色面积控制在 20% 以内——大面积用深色/米白打底，红色只用于关键元素（CTA、标题装饰、图标）。金色更克制，仅线条/边框/小面积点缀。杜绝大红大金的「年货包装」风格，追求故宫文创的内敛质感。字体建议衬线体标题 + 无衬线正文。</div>'},
+
+    {name:"清新珊瑚",en:"Coral Fresh",
+     desc:"年轻、活力、亲和力。珊瑚橘（Pantone 2019 年度色）温暖且有能量，适合面向年轻用户的社交产品。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#1F1512">#1F1512</div><div class="palette-swatch light-text" style="background:#E8665D">#E8665D</div><div class="palette-swatch light-text" style="background:#FF7F6E">#FF7F6E</div><div class="palette-swatch dark-text" style="background:#FFD1C9">#FFD1C9</div><div class="palette-swatch dark-text" style="background:#FFF5F3">#FFF5F3</div></div><div class="palette-use"><b>适用场景：</b>社交 App、美食平台、生活服务、面向 Z 世代的消费品牌<br><b>配色诉求：</b>比红色更温柔，比橙色更精致。传递「温暖有趣」而非「严肃正式」。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n使用珊瑚橘为主色 #FF7F6E，hover 加深至 #E8665D。页面背景 #FFF5F3（浅模式），搭配纯白卡片。文字色用暖黑 #1F1512 而非纯黑。圆角统一 12-16px（偏亲和）。按钮用珊瑚色填充 + 纯白文字。图标线性 2px、端点圆角。动效弹性缓动，体现年轻活泼感。</div>'},
+
+    {name:"午夜渐变",en:"Midnight Gradient",
+     desc:"沉浸、高端、科技感。深色渐变背景打造「暗黑模式优先」的沉浸体验，适合高端产品发布。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#0F0C29">#0F0C29</div><div class="palette-swatch light-text" style="background:#302B63">#302B63</div><div class="palette-swatch light-text" style="background:#24243E">#24243E</div><div class="palette-swatch dark-text" style="background:#A78BFA">#A78BFA</div><div class="palette-swatch dark-text" style="background:#E0E7FF">#E0E7FF</div></div><div class="palette-use"><b>适用场景：</b>产品发布页（如 Apple 风格）、音乐播放器、数据可视化大屏、游戏官网<br><b>配色诉求：</b>暗色模式优先设计，背景使用深色渐变而非纯黑。亮色仅用于关键元素，形成强烈视觉层级。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n暗色模式优先，背景使用深色渐变 linear-gradient(135deg, #0F0C29, #302B63, #24243E)。文字主色 #E0E7FF（柔白非纯白），次要 rgba(255,255,255,.5)。强调色 #A78BFA（淡紫光），仅用于 CTA、图标、数据高亮。卡片背景 rgba(255,255,255,.05)，边框 rgba(255,255,255,.08)。阴影用 inset 发光效果替代传统投影。图片/插图用暗色调处理，禁止白底图片直接放置。</div>'},
+
+    {name:"日系无印",en:"MUJI Style",
+     desc:"极简、温暖、无印象。用最少的颜色和最大的留白，让内容本身成为主角。MUJI / 无印良品美学。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#333333">#333333</div><div class="palette-swatch dark-text" style="background:#888888">#888888</div><div class="palette-swatch dark-text" style="background:#C4B5A5">#C4B5A5</div><div class="palette-swatch dark-text" style="background:#ECE6DD">#ECE6DD</div><div class="palette-swatch dark-text" style="background:#F9F6F1">#F9F6F1</div></div><div class="palette-use"><b>适用场景：</b>笔记/阅读 App、极简工具、个人博客、作品集网站、冥想/专注类产品<br><b>配色诉求：</b>只用黑白灰 + 一个暖色中性色。让用户完全聚焦于内容，界面「消失」在背景中。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n极简无印风格。配色仅 3 色：#333333（文字）、#888888（辅助）、#F9F6F1（背景）。唯一暖色 #C4B5A5 仅用于极少量强调（选中态下划线、hover 下划线）。不使用填充色按钮——所有按钮为文字型或线框型。间距极大：section 间距 80px+，段落间距 32px。正文 16px、行高 2.0。字体：衬线体标题（如 Noto Serif SC），无衬线正文。整体如白纸般干净。</div>'},
+
+    {name:"赛博霓虹",en:"Cyber Neon",
+     desc:"未来、炫酷、刺激。霓虹色 + 深黑底是游戏和潮流科技产品的标配，能量感爆棚。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#0A0A0A">#0A0A0A</div><div class="palette-swatch light-text" style="background:#00FFF5">#00FFF5</div><div class="palette-swatch light-text" style="background:#FF2A6D">#FF2A6D</div><div class="palette-swatch light-text" style="background:#05FF00">#05FF00</div><div class="palette-swatch light-text" style="background:#B026FF">#B026FF</div></div><div class="palette-use"><b>适用场景：</b>游戏官网、电竞赛事、潮牌电商、音乐节宣传、黑客工具界面<br><b>配色诉求：</b>纯黑底 + 多个霓虹色交替使用，营造「电子夜店」氛围。颜色必须发光（text-shadow / box-shadow glow）。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n赛博霓虹风格，纯黑背景 #0A0A0A。主霓虹色 #00FFF5（青），辅助 #FF2A6D（洋红）、#05FF00（荧光绿）。所有霓虹色元素必须带发光效果：text-shadow: 0 0 10px currentColor, 0 0 40px currentColor; box-shadow: 0 0 15px rgba(0,255,245,.3)。文字用 #E0E0E0 而非纯白，降低刺眼感。字体用等宽体（如 JetBrains Mono）。边框用 1px 霓虹色线条，背景可用 scanline 纹理叠加。</div>'},
+
+    {name:"浅色中性",en:"Light Neutral",
+     desc:"安全、百搭、零风险。纯灰度 + 单一蓝色强调，是最不会出错的配色方案。适合 MVP 和功能型产品。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#111827">#111827</div><div class="palette-swatch light-text" style="background:#374151">#374151</div><div class="palette-swatch dark-text" style="background:#9CA3AF">#9CA3AF</div><div class="palette-swatch dark-text" style="background:#F3F4F6">#F3F4F6</div><div class="palette-swatch dark-text" style="background:#FFFFFF">#FFFFFF</div></div><div class="palette-use"><b>适用场景：</b>MVP 快速上线、内部工具、文档站点、管理后台、任何「先跑起来再说」的项目<br><b>配色诉求：</b>零决策成本配色——全灰度 + 一个蓝色强调。不追求个性，追求「不犯错」和「可维护」。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n使用 Tailwind CSS 默认灰色体系 gray-50 至 gray-900。唯一彩色为 blue-600 (#2563EB) 作为强调色，用于链接、主按钮、选中态。背景 #FFFFFF，卡片无阴影用 1px 边框 #E5E7EB 分隔。文字 #111827 / #6B7280 / #9CA3AF 三级灰。不使用渐变、不使用多彩色。这是最稳妥、最易维护的配色方案。</div>'},
+
+    {name:"暖阳橙黄",en:"Warm Sunshine",
+     desc:"热情、乐观、行动力。橙黄色系激发食欲和购买欲，是外卖、电商促销的常用色。",
+     demo:'<div class="palette-row"><div class="palette-swatch light-text" style="background:#1C1208">#1C1208</div><div class="palette-swatch light-text" style="background:#B45309">#B45309</div><div class="palette-swatch light-text" style="background:#F59E0B">#F59E0B</div><div class="palette-swatch dark-text" style="background:#FDE68A">#FDE68A</div><div class="palette-swatch dark-text" style="background:#FFFBEB">#FFFBEB</div></div><div class="palette-use"><b>适用场景：</b>外卖/餐饮 App、电商大促活动页、教育产品（激发学习热情）、儿童产品<br><b>配色诉求：</b>橙黄色刺激行动欲和食欲。注意控制面积——大面积橙色会廉价化，需用深色和白色平衡。</div><div class="palette-prompt"><span class="hl">AI / 设计师指令：</span>\n暖色系配色。主色 #F59E0B（琥珀色），CTA 按钮和价格标签使用此色。深色 #B45309 用于 hover 和重要标题。页面主体背景白色 / 奶黄 #FFFBEB，大面积暖色不超过 15%。文字用 #1C1208（暖黑），辅助 #78716C。圆角偏大 12-16px，整体圆润亲和。促销标签可用 #DC2626 红色搭配橙色使用。</div>'}
+  ]
+},
+
+// ========== 第8章 项目经验 ==========
+{
+  id:"project",title:"项目经验",num:"08",
+  desc:"真实项目中提炼的设计方法论。以项目为单位收录，点击展开查看完整设计体系。",
+  terms:[
+    {name:"IP管理驾驶舱",en:"IP Dashboard Platform",
+     desc:"数据驾驶舱类产品的设计方法论沉淀。核心理念：「高级来自减法」——通过去框线、降饱和、缩状态标识，用克制的视觉语言承载复杂数据。",
+     demo:'<div class="palette-use" style="margin-bottom:16px"><b>项目概述</b><br>话题 IP 营销驾驶舱 · 数据看板型产品，含 Hero 指标卡、时间轴甘特图、多维筛选面板。<br>设计周期 2026.05，持续迭代中。</div><div style="background:var(--tag-bg);border-radius:8px;padding:20px;margin-bottom:16px"><b style="font-size:13px;color:var(--text)">设计哲学 · 五原则</b><div style="margin-top:12px;font-size:12px;color:var(--sub);line-height:2"><b style="color:var(--text)">① 减法优先</b> — 删冗余框线、降饱和度、缩状态标识到最小单位<br><b style="color:var(--text)">② Show don\'t tell</b> — 可视化自解释就不额外加文字判定行<br><b style="color:var(--text)">③ 结构同构</b> — 同类卡片用相同骨架（meta → vis → judge），内容贴合各指标本质<br><b style="color:var(--text)">④ 数据视图分离</b> — 元数据与数值拆开，接入真实业务只替换数值层<br><b style="color:var(--text)">⑤ 路径完备</b> — 任何开关态必须双向可达，状态机无死节点</div></div><div style="background:var(--tag-bg);border-radius:8px;padding:20px;margin-bottom:16px"><b style="font-size:13px;color:var(--text)">色彩方法论</b><div style="margin-top:12px;font-size:12px;color:var(--sub);line-height:2"><b style="color:var(--text)">核心规则：状态色永远用低透明度</b><br>• 背景层暖白 #FAFAF7 + 品牌色暖陶 #C4652A（仅 CTA 和活跃态）<br>• 状态三色：绿 #2D6A4F / 琥珀 #B8860B / 红 #B23A3A<br>• <b style="color:var(--accent)">关键方法论</b>：chip 背景用 rgba 8-10% 透明度，bar 用 14%，永远不实填<br>• 深色模式只切换 bg/text/divider 四个底层 token，accent 与 status 不变</div></div><div style="background:var(--tag-bg);border-radius:8px;padding:20px;margin-bottom:16px"><b style="font-size:13px;color:var(--text)">组件模式库</b><div style="margin-top:12px;font-size:12px;color:var(--sub);line-height:2"><b style="color:var(--text)">三段式信息卡</b> — 主数字(serif居中) → meta行(左对齐) → 可视化层 → judge行(可选)<br><b style="color:var(--text)">阈值色条</b> — 6px底条 + rgba14%双段淡填 + 1px阈值线 + 游标竖条<br><b style="color:var(--text)">甘特日历</b> — CSS Grid + 贪心lane装箱，左侧3px色条标识进行中/计划中/已结案<br><b style="color:var(--text)">翻页器</b> — 替代平铺Tab，配合独立toggle按钮，data属性记住来源<br><b style="color:var(--text)">状态Chip</b> — 胶囊形，6px圆点+文字，rgba低透明度底色</div></div><div style="background:var(--tag-bg);border-radius:8px;padding:20px;margin-bottom:16px"><b style="font-size:13px;color:var(--text)">排版与交互规则</b><div style="margin-top:12px;font-size:12px;color:var(--sub);line-height:2"><b style="color:var(--text)">混合对齐</b> — 主数字居中（给主角）+ 细节左对齐（给正文）= 杂志版面<br><b style="color:var(--text)">证据→结论</b> — 数据/事实在左，判定/chip在右，顺应阅读心理<br><b style="color:var(--text)">hover克制</b> — 默认无阴影用1px border，hover才上shadow-sm + translateY(-1px)<br><b style="color:var(--text)">动效分级</b> — 微交互140ms → 通用200ms → 面板300ms → 数据动画1200ms</div></div><div class="palette-prompt"><span class="hl">复用此设计体系的 AI 指令：</span>\n设计一个数据驾驶舱页面。风格：暖白底(#FAFAF7)+赤褐强调(#C4652A)，去AI感，Notion式克制。核心原则：\n1. 减法优先——状态用rgba 8-14%低透明度表达，不实填；默认无阴影用1px border\n2. 三段式卡片骨架：主数字(76px serif居中) → meta行 → 可视化层 → judge行\n3. 字号11级阶梯(76→9.5px)，大字负字距，小字正字距\n4. 间距阶梯4-56px，卡片padding28px，圆角由外向内递减(12→6→3px)\n5. 动效easeOut曲线cubic-bezier(0.22,0.61,0.36,1)，禁用linear\n6. 所有开关/切换组件必须双向可达，用data属性记住来源状态</div>'}
+  ]
+}
+];
+
+// === 渲染 ===
+function render(){
+  const nav=document.getElementById("navList");
+  const ct=document.getElementById("content");
+  let navH="",ctH="";
+  DATA.forEach(sec=>{
+    navH+='<div class="nav-group"><div class="nav-group-title" style="cursor:pointer" onclick="navScrollTo(\'sec-'+sec.id+'\')">'+sec.num+' '+sec.title+'</div>';
+    sec.terms.forEach((t,i)=>{
+      navH+='<div class="nav-item" data-target="'+sec.id+"-"+i+'" onclick="navScrollTo(\''+sec.id+"-"+i+'\')">'+t.name+'</div>';
+    });
+    navH+="</div>";
+    ctH+='<div class="section" id="sec-'+sec.id+'"><div class="section-head"><h3><span class="num">'+sec.num+'</span>'+sec.title+'</h3><p>'+sec.desc+'</p></div><div class="term-grid">';
+    sec.terms.forEach((t,i)=>{
+      const demoHtml=sec.id==="sites"
+        ? t.demo
+        : '<div class="demo-box"><span class="demo-label">DEMO</span>'+t.demo+'</div>';
+      ctH+='<div class="term-card" id="'+sec.id+"-"+i+'"><div class="term-header" onclick="toggleCard(this)"><h4>'+t.name+' <span class="en">'+t.en+'</span></h4><span class="arrow">&#9654;</span></div><div class="term-body"><div class="term-desc">'+t.desc+'</div>'+demoHtml+'</div></div>';
+    });
+    ctH+="</div></div>";
+  });
+  nav.innerHTML=navH;
+  ct.innerHTML=ctH;
+}
+function toggleCard(el){el.parentElement.classList.toggle("open")}
+
+// 点击导航跳转到对应术语卡片（避免覆盖原生 scrollTo）
+function navScrollTo(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  // 确保卡片展开
+  el.classList.add("open");
+  // 计算滚动位置，减去顶部导航栏高度 + 额外间距
+  const top=el.getBoundingClientRect().top+window.pageYOffset-72;
+  window.scrollTo({top:top,behavior:"smooth"});
+  // 高亮闪烁提示
+  el.style.boxShadow="0 0 0 2px var(--accent)";
+  setTimeout(()=>{el.style.boxShadow=""},1200);
+}
+
+function filterTerms(v){
+  const q=v.toLowerCase();
+  document.querySelectorAll(".term-card").forEach(c=>{
+    const t=c.textContent.toLowerCase();
+    c.style.display=t.includes(q)?"":"none";
+  });
+  document.querySelectorAll(".nav-item").forEach(n=>{
+    const t=n.textContent.toLowerCase();
+    n.style.display=t.includes(q)?"":"none";
+  });
+  // 搜索时也过滤章节标题
+  document.querySelectorAll(".nav-group").forEach(g=>{
+    const visible=g.querySelectorAll(".nav-item[style=''],.nav-item:not([style])");
+    g.style.display=visible.length?"":"none";
+  });
+}
+
+// 滚动时高亮左侧导航 + 侧边栏自动跟随
+let ticking=false;
+window.addEventListener("scroll",function(){
+  if(!ticking){
+    window.requestAnimationFrame(function(){
+      const cards=document.querySelectorAll(".term-card");
+      let currentId="";
+      // 找到当前视口中最靠近顶部的卡片
+      for(let i=0;i<cards.length;i++){
+        const rect=cards[i].getBoundingClientRect();
+        if(rect.top<=120) currentId=cards[i].id;
+      }
+      // 更新导航高亮
+      const navItems=document.querySelectorAll(".nav-item");
+      navItems.forEach(n=>{
+        const isActive=n.getAttribute("data-target")===currentId;
+        n.classList.toggle("active",isActive);
+        // 让侧边栏滚动到当前活跃项可见
+        if(isActive){
+          const sidebar=document.getElementById("sidebar");
+          const navRect=n.getBoundingClientRect();
+          const sideRect=sidebar.getBoundingClientRect();
+          if(navRect.top<sideRect.top+60||navRect.bottom>sideRect.bottom-20){
+            n.scrollIntoView({block:"center",behavior:"smooth"});
+          }
+        }
+      });
+      ticking=false;
+    });
+    ticking=true;
+  }
+});
+
+render();
+// 默认展开所有卡片
+document.querySelectorAll(".term-card").forEach(c=>c.classList.add("open"));
+</script>
+</body>
+</html>
