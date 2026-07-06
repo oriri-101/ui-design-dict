@@ -190,6 +190,24 @@ a{color:var(--accent);text-decoration:none}
 .resource-link .r-url{font-size:12px;color:var(--sub);font-weight:400}
 .resource-link .r-arrow{font-size:12px;color:var(--sub)}
 
+/* 设计网站分组折叠 */
+.site-group{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;background:var(--card);transition:border-color .2s}
+.site-group:hover{border-color:var(--accent)}
+.site-group-header{padding:14px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:var(--tag-bg);transition:background .15s;user-select:none}
+.site-group-header:hover{background:var(--hover)}
+.site-group-name{font-size:14px;font-weight:600;color:var(--text);letter-spacing:.3px}
+.site-group-meta{font-size:11px;color:var(--sub);font-weight:400;margin-left:auto;margin-right:10px}
+.site-group-arrow{font-size:11px;color:var(--sub);transition:transform .25s}
+.site-group.open .site-group-arrow{transform:rotate(180deg)}
+.site-group-body{display:none;padding:4px 20px 12px}
+.site-group.open .site-group-body{display:block;animation:fadeIn .25s}
+.site-item{padding:14px 0;border-bottom:1px dashed var(--border)}
+.site-item:last-child{border-bottom:none}
+.site-item-head h4{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.site-item-head h4 .en{font-size:11px;color:var(--sub);font-weight:400}
+.site-item-desc{font-size:12px;color:var(--sub);line-height:1.7;margin-bottom:10px}
+.site-item-demo{font-size:13px}
+
 /* Responsive */
 @media(max-width:768px){
   .sidebar{display:none}
@@ -283,41 +301,50 @@ const DATA=[
 // ========== 设计网站 ==========
 {
   id:"sites",title:"设计网站",num:"00",
-  desc:"精选设计资源与灵感站点，持续收录中。",
+  desc:"精选设计资源与灵感站点，按分类折叠展示，点击展开。",
   terms:[
-    {name:"单页设计",en:"One Page Love",
+    {name:"单页设计",en:"One Page Love",cat:"网站模板",
      desc:"收录全球最佳单页网站设计的灵感库，涵盖落地页、产品页、作品集等类型，是单页设计参考的首选。",
      demo:'<a class="resource-link" href="https://onepagelove.com/page/5" target="_blank" rel="noopener">单页设计 One Page Love<span class="r-url">onepagelove.com/page/5</span><span class="r-arrow">&#8594;</span></a>'},
-    {name:"wrapmarket",en:"Website Design",
+    {name:"wrapmarket",en:"Website Design",cat:"网站模板",
      desc:"精选网站设计模板与灵感市场，涵盖各类网站风格参考，适合快速找到设计方向。",
      demo:'<a class="resource-link" href="https://wrapmarket.com/" target="_blank" rel="noopener">wrapmarket 网站设计<span class="r-url">wrapmarket.com</span><span class="r-arrow">&#8594;</span></a>'},
-    {name:"Behance",en:"全球顶级作品集殿堂 · 全能审美天花板",
+    {name:"MUUUU",en:"日系质感网页天花板",cat:"网站模板",
+     desc:"日系质感网页天花板。聚焦家具、服饰、生活方式品牌，大量大面积留白、低对比柔和色调，是「克制美学」的教科书级参考。",
+     demo:'<a class="resource-link" href="https://muuuuu.org/" target="_blank" rel="noopener">MUUUU 日系质感网页<span class="r-url">muuuuu.org</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>大面积留白 / 低对比柔和色调 / 日系质感排版<br><b style="color:var(--text)">适合：</b>做家居/服饰/生活方式品牌官网，追求「日式克制」气质</div>'},
+    {name:"Web Design Clip",en:"日式简约企业作品集",cat:"网站模板",
+     desc:"日式简约企业网站与设计师作品集精选。细腻文字排版、轻质感动效，是日系「克制 + 精致」结合的代表。",
+     demo:'<a class="resource-link" href="https://webdesignclip.com/" target="_blank" rel="noopener">Web Design Clip 日式简约<span class="r-url">webdesignclip.com</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>细腻文字排版 / 轻质感动效 / 日式简约结构<br><b style="color:var(--text)">适合：</b>做企业官网或个人作品集，对标日系设计师水准</div>'},
+    {name:"Behance",en:"全球顶级作品集殿堂 · 全能审美天花板",cat:"灵感聚合",
      desc:"Adobe 旗下全球设计师作品集平台。覆盖品牌、UI、插画、摄影、3D、动态设计全领域，从顶级排版到完整项目叙事逻辑都能学到。每天刷10个精选项目，1个月整体审美明显拔高。",
      demo:'<a class="resource-link" href="https://www.behance.net/" target="_blank" rel="noopener">Behance 顶级作品集<span class="r-url">behance.net</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>顶级排版 / 色彩 / 作品叙事 / 完整项目逻辑<br><b style="color:var(--text)">适合：</b>每天刷10个精选项目，系统性拔高整体审美</div>'},
-    {name:"Awwwards",en:"网页设计奥斯卡 · 高级感+交互标杆",
+    {name:"Awwwards",en:"网页设计奥斯卡 · 高级感+交互标杆",cat:"灵感聚合",
      desc:"全球网页设计奖项平台，只收录高分获奖网页，质量极高。学界布局层次、动效节奏、视觉焦点、极简高级感的标杆参考。",
      demo:'<a class="resource-link" href="https://www.awwwards.com/" target="_blank" rel="noopener">Awwwards 网页设计奖<span class="r-url">awwwards.com</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>布局层次 / 动效节奏 / 视觉焦点 / 极简高级感<br><b style="color:var(--text)">适合：</b>想把界面/官网做「精致、克制、有质感」</div>'},
-    {name:"Dribbble",en:"设计师朋友圈 · 细节精致度之王",
+    {name:"Dribbble",en:"设计师朋友圈 · 细节精致度之王",cat:"灵感聚合",
      desc:"主打单张高质量「Shot」展示，以 UI 图标、插画、微动效居多。校准「干净不廉价」的细节审美，刷新对小面积配色和 icon 审美的认知。",
      demo:'<a class="resource-link" href="https://dribbble.com/" target="_blank" rel="noopener">Dribbble 设计师社区<span class="r-url">dribbble.com</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>细节打磨 / 精致感 / 小面积配色 / icon 审美<br><b style="color:var(--text)">适合：</b>通勤碎片时间刷，校准细节审美</div>'},
-    {name:"Minimal Gallery",en:"极简主义集中营 · 专治杂乱",
+    {name:"Minimal Gallery",en:"极简主义集中营 · 专治杂乱",cat:"灵感聚合",
      desc:"全站极致留白、克制色彩、简洁排版，干净到治愈。专治「页面脏、乱、堆砌」综合症，10分钟即可校准视觉。",
      demo:'<a class="resource-link" href="https://minimal.gallery/" target="_blank" rel="noopener">Minimal Gallery 极简画廊<span class="r-url">minimal.gallery</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>留白逻辑 / 色彩克制 / 信息层级 / 极简高级感<br><b style="color:var(--text)">适合：</b>感觉页面「脏、乱、堆砌」时强行校准</div>'},
-    {name:"站酷",en:"ZCOOL · 国内顶尖设计师社区",
+    {name:"站酷",en:"ZCOOL · 国内顶尖设计师社区",cat:"灵感聚合",
      desc:"国内大神聚集地，覆盖品牌、海报、包装、UI、插画全领域。结合本土落地性与东方审美，避免「好看但不接地气」。",
      demo:'<a class="resource-link" href="https://www.zcool.com.cn/" target="_blank" rel="noopener">站酷 ZCOOL<span class="r-url">zcool.com.cn</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>中国市场商业审美 / 东方韵味 / 落地性强的方案<br><b style="color:var(--text)">适合：</b>国际审美 + 本土落地结合，避免脱离实际</div>'},
-    {name:"React Bits",en:"动效组件库 · Animated UI Components",
-     desc:"React 动效组件库，开箱即用的高质量交互动画组件——文字动效、背景特效、卡片悬停、转场过渡等。代码可直接复制使用，是给页面注入「灵动感」的高效弹药库。",
-     demo:'<a class="resource-link" href="https://reactbits.dev/" target="_blank" rel="noopener">React Bits 动效组件库<span class="r-url">reactbits.dev</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>文字动效 / 背景特效 / 微交互节奏 / 转场设计<br><b style="color:var(--text)">适合：</b>需要给页面快速加「灵动感」时，直接复制组件落地</div>'},
-    {name:"TDesign",en:"腾讯设计规范 · Tencent Design System",
+    {name:"TDesign",en:"腾讯设计规范 · Tencent Design System",cat:"设计规范",
      desc:"腾讯官方企业级设计语言，覆盖 Web / 小程序 / 移动端全场景。包含完整设计原则、组件库、Starter 模板、Figma 资源。沉稳克制、专业可信，国内大厂设计规范的代表之一。",
      demo:'<a class="resource-link" href="https://tdesign.tencent.com/starter/" target="_blank" rel="noopener">TDesign 腾讯设计规范<span class="r-url">tdesign.tencent.com/starter</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>企业级组件规范 / 中后台模板 / 设计 Token 体系 / 多端适配<br><b style="color:var(--text)">适合：</b>做 B 端中后台 / 企业 SaaS，需要可落地的成熟规范打底</div>'},
-    {name:"Ant Design",en:"阿里设计规范 · Alibaba Design Language",
+    {name:"Ant Design",en:"阿里设计规范 · Alibaba Design Language",cat:"设计规范",
      desc:"蚂蚁集团出品的企业级 UI 设计语言，国内 B 端设计规范的事实标准。设计原则、视觉语言、模式库、React/Vue 组件全套齐备，文档详尽，落地性极强。",
      demo:'<a class="resource-link" href="https://012x.ant.design/docs/react/introduce" target="_blank" rel="noopener">Ant Design 阿里设计规范<span class="r-url">012x.ant.design</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>B 端设计原则 / 组件模式库 / 表单表格最佳实践 / 设计价值观<br><b style="color:var(--text)">适合：</b>做后台/SaaS/数据型产品，找最权威的中后台设计语言参考</div>'},
-    {name:"Arco Design",en:"字节设计规范 · ByteDance Design System",
+    {name:"Arco Design",en:"字节设计规范 · ByteDance Design System",cat:"设计规范",
      desc:"字节跳动出品的企业级设计语言，强调「克制、效率、简洁」。组件现代利落，交互节奏克制，是新一代设计规范的代表，特别适合 SaaS 与数据型产品。",
-     demo:'<a class="resource-link" href="https://arco.design/" target="_blank" rel="noopener">Arco Design 字节设计规范<span class="r-url">arco.design</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>现代克制风组件 / 数据可视化模式 / 暗色模式规范 / 微交互节奏<br><b style="color:var(--text)">适合：</b>做现代感强、数据密集型 B 端产品，对标 Linear/Vercel 美学</div>'}
+     demo:'<a class="resource-link" href="https://arco.design/" target="_blank" rel="noopener">Arco Design 字节设计规范<span class="r-url">arco.design</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>现代克制风组件 / 数据可视化模式 / 暗色模式规范 / 微交互节奏<br><b style="color:var(--text)">适合：</b>做现代感强、数据密集型 B 端产品，对标 Linear/Vercel 美学</div>'},
+    {name:"React Bits",en:"动效组件库 · Animated UI Components",cat:"专项工具",
+     desc:"React 动效组件库，开箱即用的高质量交互动画组件——文字动效、背景特效、卡片悬停、转场过渡等。代码可直接复制使用，是给页面注入「灵动感」的高效弹药库。",
+     demo:'<a class="resource-link" href="https://reactbits.dev/" target="_blank" rel="noopener">React Bits 动效组件库<span class="r-url">reactbits.dev</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>文字动效 / 背景特效 / 微交互节奏 / 转场设计<br><b style="color:var(--text)">适合：</b>需要给页面快速加「灵动感」时，直接复制组件落地</div>'},
+    {name:"Typewolf",en:"字体搭配参考 · Typography Inspiration",cat:"专项工具",
+     desc:"高端网页字体组合参考站，专注精选「衬线 + 无衬线」轻奢搭配，是奢侈品牌、文化品牌、独立工作室的标准用字方案来源。每个站点都附带字体识别与组合解析。",
+     demo:'<a class="resource-link" href="https://www.typewolf.com/" target="_blank" rel="noopener">Typewolf 字体搭配<span class="r-url">typewolf.com</span><span class="r-arrow">&#8594;</span></a><div style="margin-top:8px;font-size:11px;color:var(--sub);line-height:1.8"><b style="color:var(--text)">能学到：</b>衬线+无衬线搭配 / 奢侈品牌用字 / 高端排版组合 / 字体识别<br><b style="color:var(--text)">适合：</b>做高端品牌官网、文化类产品，需要「轻奢字体感」时参考</div>'}
   ]
 },
 // ========== 第1章 设计风格 ==========
@@ -532,7 +559,43 @@ function render(){
   const nav=document.getElementById("navList");
   const ct=document.getElementById("content");
   let navH="",ctH="";
+  const SITE_CAT_ORDER=["灵感聚合","网站模板","设计规范","专项工具"];
   DATA.forEach(sec=>{
+    if(sec.id==="sites"){
+      // === sites 章节专用：按分类折叠分组 ===
+      navH+='<div class="nav-group"><div class="nav-group-title" style="cursor:pointer" onclick="navScrollTo(\'sec-'+sec.id+'\')">'+sec.num+' '+sec.title+'</div>';
+      const cats={};
+      sec.terms.forEach(t=>{const c=t.cat||"其他";(cats[c]=cats[c]||[]).push(t)});
+      SITE_CAT_ORDER.forEach(cat=>{
+        if(!cats[cat])return;
+        navH+='<div class="nav-item" onclick="navScrollTo(\'sites-cat-'+encodeURIComponent(cat)+'\')">'+cat+' <span style="color:var(--border);font-size:11px">('+cats[cat].length+')</span></div>';
+      });
+      navH+="</div>";
+
+      ctH+='<div class="section" id="sec-'+sec.id+'"><div class="section-head"><h3><span class="num">'+sec.num+'</span>'+sec.title+'</h3><p>'+sec.desc+'</p></div>';
+      SITE_CAT_ORDER.forEach(cat=>{
+        if(!cats[cat])return;
+        ctH+='<div class="site-group" id="sites-cat-'+encodeURIComponent(cat)+'">'+
+          '<div class="site-group-header" onclick="toggleSiteGroup(this)">'+
+            '<span class="site-group-name">'+cat+'</span>'+
+            '<span class="site-group-meta">'+cats[cat].length+' 个站点</span>'+
+            '<span class="site-group-arrow">&#9660;</span>'+
+          '</div>'+
+          '<div class="site-group-body">'+
+            cats[cat].map(t=>
+              '<div class="site-item">'+
+                '<div class="site-item-head"><h4>'+t.name+' <span class="en">'+t.en+'</span></h4></div>'+
+                '<div class="site-item-desc">'+t.desc+'</div>'+
+                '<div class="site-item-demo">'+t.demo+'</div>'+
+              '</div>'
+            ).join("")+
+          '</div>'+
+        '</div>';
+      });
+      ctH+="</div>";
+      return;
+    }
+    // === 其他章节：原有逻辑 ===
     navH+='<div class="nav-group"><div class="nav-group-title" style="cursor:pointer" onclick="navScrollTo(\'sec-'+sec.id+'\')">'+sec.num+' '+sec.title+'</div>';
     sec.terms.forEach((t,i)=>{
       navH+='<div class="nav-item" data-target="'+sec.id+"-"+i+'" onclick="navScrollTo(\''+sec.id+"-"+i+'\')">'+t.name+'</div>';
@@ -551,6 +614,7 @@ function render(){
   ct.innerHTML=ctH;
 }
 function toggleCard(el){el.parentElement.classList.toggle("open")}
+function toggleSiteGroup(el){el.parentElement.classList.toggle("open")}
 
 // 点击导航跳转到对应术语卡片（避免覆盖原生 scrollTo）
 function navScrollTo(id){
@@ -571,6 +635,18 @@ function filterTerms(v){
   document.querySelectorAll(".term-card").forEach(c=>{
     const t=c.textContent.toLowerCase();
     c.style.display=t.includes(q)?"":"none";
+  });
+  // 设计网站分组折叠：搜索时按 site-item 匹配，全组无命中则隐藏整组
+  document.querySelectorAll(".site-group").forEach(g=>{
+    if(!q){g.style.display="";g.querySelectorAll(".site-item").forEach(it=>it.style.display="");return}
+    let any=false;
+    g.querySelectorAll(".site-item").forEach(it=>{
+      const hit=it.textContent.toLowerCase().includes(q);
+      it.style.display=hit?"":"none";
+      if(hit)any=true;
+    });
+    g.style.display=any?"":"none";
+    if(any)g.classList.add("open");
   });
   document.querySelectorAll(".nav-item").forEach(n=>{
     const t=n.textContent.toLowerCase();
